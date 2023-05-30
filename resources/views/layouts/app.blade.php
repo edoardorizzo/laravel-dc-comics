@@ -16,7 +16,7 @@
 
     <link rel="icon" type="image/x-icon" href="{{ Vite::asset('resources/img/favicon.ico') }}" />
     
-    <title>DC Comics - @yield("pageTitle", "Welcome")</title>
+    <title>DC Comics</title>
 
     <!-- Styles -->
     @vite('resources/js/app.js')

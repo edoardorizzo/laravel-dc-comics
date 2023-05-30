@@ -8,7 +8,7 @@ Characters
 @section("content")
 <div id="separator" class="bg-primary py-5">
   <div class="container">
-    <h1 class="mb-0 text-white text-uppercase">Characters page</h1>
+    <h1 class="mb-0 text-white text-uppercase">Characters</h1>
   </div>
 </div>
 @endsection
