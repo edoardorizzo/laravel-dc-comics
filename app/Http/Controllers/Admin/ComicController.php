@@ -3,8 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Comic;
 use Illuminate\Http\Request;
+use App\Models\Comic;
+use App\Models\DcComicsLink;
+use App\Models\DcLink;
+use App\Models\Page;
+use App\Models\ShopLink;
+use App\Models\SiteBanner;
+use App\Models\SiteLink;
 
 class ComicController extends Controller
 {
@@ -15,9 +21,16 @@ class ComicController extends Controller
      */
     public function index()
     {
-        $comics = Comic::all();
-        $db = config("db");
-        return view('admin.comics.index', compact("comics", "db"));
+        $data = [
+            "comics" => Comic::orderByDesc('id')->get(),
+            "dcComicsLinks" => DcComicsLink::all(),
+            "dcLinks" => DcLink::all(),
+            "pages" => Page::all(),
+            "shopLinks" => ShopLink::all(),
+            "siteBanners" => SiteBanner::all(),
+            "siteLinks" => SiteLink::all(),
+        ];
+        return view('admin.comics.index', compact("data"));
     }
 
     /**
@@ -27,8 +40,15 @@ class ComicController extends Controller
      */
     public function create()
     {
-        $db = config("db");
-        return view('admin.comics.create', compact("db"));
+        $data = [
+            "dcComicsLinks" => DcComicsLink::all(),
+            "dcLinks" => DcLink::all(),
+            "pages" => Page::all(),
+            "shopLinks" => ShopLink::all(),
+            "siteBanners" => SiteBanner::all(),
+            "siteLinks" => SiteLink::all(),
+        ];
+        return view('admin.comics.create', compact("data"));
     }
 
     /**
@@ -39,6 +59,10 @@ class ComicController extends Controller
      */
     public function store(Request $request)
     {
+        if(empty($request->title) || empty($request->description) || empty($request->thumb) || empty($request->price)) {
+            return to_route('comics.create')->with("message", "Please, fill all the required fields");
+        }
+
         $data = [
             "title" => $request->title,
             "description" => $request->description,
@@ -50,7 +74,7 @@ class ComicController extends Controller
         ];
         
         Comic::create($data);
-        return to_route('comics.index');
+        return to_route('comics.index')->with("message", "Comic $request->title successfully created");
     }
 
     /**
@@ -61,8 +85,16 @@ class ComicController extends Controller
      */
     public function show(Comic $comic)
     {
-        $db = config("db");
-        return view('admin.comics.show', compact("comic", "db"));
+        $data = [
+            "comic" => $comic,
+            "dcComicsLinks" => DcComicsLink::all(),
+            "dcLinks" => DcLink::all(),
+            "pages" => Page::all(),
+            "shopLinks" => ShopLink::all(),
+            "siteBanners" => SiteBanner::all(),
+            "siteLinks" => SiteLink::all(),
+        ];
+        return view('admin.comics.show', compact("data"));
     }
 
     /**
@@ -73,7 +105,16 @@ class ComicController extends Controller
      */
     public function edit(Comic $comic)
     {
-        //
+        $data = [
+            "comic" => $comic,
+            "dcComicsLinks" => DcComicsLink::all(),
+            "dcLinks" => DcLink::all(),
+            "pages" => Page::all(),
+            "shopLinks" => ShopLink::all(),
+            "siteBanners" => SiteBanner::all(),
+            "siteLinks" => SiteLink::all(),
+        ];
+        return view("admin.comics.edit", compact("data"));
     }
 
     /**
@@ -85,7 +126,23 @@ class ComicController extends Controller
      */
     public function update(Request $request, Comic $comic)
     {
-        //
+        if(empty($request->title) || empty($request->description) || empty($request->thumb) || empty($request->price)) {
+            return to_route('comics.index')->with("message", "Please, fill all the required fields");
+        }
+
+        $data = [
+            "title" => $request -> title,
+            "description" => $request -> description,
+            "thumb" => $request -> thumb,
+            "price" => $request -> price,
+            "series" => $request -> series,
+            "sale_date" => $request -> sale_date,
+            "type" => $request -> type
+        ];
+
+        $comic->update($data);
+        
+        return to_route("comics.show", $comic -> id)->with("message", "Comic $request->title successfully updated");
     }
 
     /**
@@ -96,6 +153,7 @@ class ComicController extends Controller
      */
     public function destroy(Comic $comic)
     {
-        //
+        $comic->delete();
+        return to_route("comics.index")->with("message", "Comic $comic->title successfully deleted");
     }
 }

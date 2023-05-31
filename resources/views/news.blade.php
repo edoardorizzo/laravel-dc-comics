@@ -4,11 +4,10 @@
 Characters
 @endsection
 
-
 @section("content")
 <div id="separator" class="bg-primary py-5">
   <div class="container">
-    <h1 class="mb-0 text-white text-uppercase">News</h1>
+    <h1 class="mb-0 text-white text-uppercase">News page</h1>
   </div>
 </div>
 @endsection
